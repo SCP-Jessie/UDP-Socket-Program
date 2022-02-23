@@ -5,6 +5,7 @@
 
 int main(void){
     int socket_desc;
+    // hold address info for both the client and server
     struct sockaddr_in server_addr, client_addr;
     char server_message[2000], client_message[2000];
     int client_struct_length = sizeof(client_addr);
@@ -35,7 +36,9 @@ int main(void){
     {
 	    printf("Listening for incoming messages...\n\n");
 	    
-	    // Receive client's message:
+	    // Receive client's message - return length of client message
+	    // Directly receive client information here - put into client_message
+	    // Wait for client's sendto() call
 	    if (recvfrom(socket_desc, client_message, sizeof(client_message), 0,
 		 (struct sockaddr*)&client_addr, &client_struct_length) < 0){
 		printf("Couldn't receive\n");
@@ -50,7 +53,10 @@ int main(void){
 	    //Copy client_message into server_message
 	    strcpy(server_message, client_message);
 	    
+	    char extra_message[] = " no";
+	    strcat(server_message, extra_message);
 	    //send what ever is now in server_message back to client
+	    // send to client's recvfrom() call with client address
 	    if (sendto(socket_desc, server_message, strlen(server_message), 0,
 		 (struct sockaddr*)&client_addr, client_struct_length) < 0){
 		printf("Can't send\n");

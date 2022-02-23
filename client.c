@@ -9,10 +9,6 @@ int main(void){
     char server_message[2000], client_message[2000];
     int server_struct_length = sizeof(server_addr);
     
-    // Clean buffers:
-    memset(server_message, '\0', sizeof(server_message));
-    memset(client_message, '\0', sizeof(client_message));
-    
     // Create socket:
     socket_desc = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     
@@ -22,7 +18,7 @@ int main(void){
     }
     printf("Socket created\n");
     
-    // Set port and IP:
+    // Set port and IP - the server's info
     server_addr.sin_family = AF_INET;
     server_addr.sin_port = htons(2000);
     server_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
@@ -34,6 +30,7 @@ int main(void){
 	    gets(client_message);
 	    
 	    // Send the message to server:
+	    // include address of target
 	    if(sendto(socket_desc, client_message, strlen(client_message), 0,
 		 (struct sockaddr*)&server_addr, server_struct_length) < 0){
 		printf("Send failed\n");
